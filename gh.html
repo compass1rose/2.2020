@@ -1,0 +1,96 @@
+
+<html>
+    <head>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+            <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+             crossorigin=""></script>
+    <style>
+
+         #mapid{
+            /* margin-top: 10%; */
+            height: 630px;
+            width: 100%;
+         }
+     </style>
+    </head>
+     <body>
+        <table border="1" cellspacing="0" cellpadding="15" width="100%" height="80" >
+            <tr>
+            <td style="background-color: #DCDCDC" >Region</td>
+            <td style="background-color: #DCDCDC">Country</td>
+            <td style="background-color: #DCDCDC">Parish</td>
+            <td style="background-color: #DCDCDC">latitude</td>
+            <td style="background-color: #DCDCDC">longitude</td>
+            <td style="background-color: #DCDCDC">Temperature / K</td>
+            <td style="background-color: #DCDCDC">humidity / %</td>
+
+            </tr>
+            <tr>
+            <td style="background-color: #DCDCDC"><span id ="region"></td>
+            <td style="background-color: #DCDCDC"><span id= "country"></td>
+            <td style="background-color: #DCDCDC"><span id= "parish"></td>   
+            <td style="background-color: #DCDCDC"><span id="lat"></td>
+            <td style="background-color: #DCDCDC"><span id = "lng"></td>
+            <td style="background-color: #DCDCDC"><span id="temp"></td>
+            <td style="background-color: #DCDCDC"><span id = "humidity"></td>
+            
+            </tr>
+            </table>
+        <div id="mapid"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script defer>
+          myurl = `https://api.postcodes.io/random/postcodes`;
+
+          $.get(myurl, function(responseText) {
+              console.log(responseText);
+              lat = responseText['result']['latitude'];
+              lng = responseText['result']['longitude'];
+              region = responseText['result']['region'];
+              country = responseText['result']['country'];
+              parish = responseText['result']['parish'];
+              
+				$("#country").html(country);
+				$("#region").html(region);
+				$("#lat").html(lat);
+				$("#lng").html(lng);
+                $('#parish').html(parish);
+    
+                const map = L.map('mapid').setView([lat, lng], 11);
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox/light-v10',
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken: 'pk.eyJ1IjoiY29tcGFza29tcGFzcyIsImEiOiJja2F6ZmU4dzUwMTk0MnFxb3dmMmJ2N2o1In0.6tc7X66aO2KTkdezzRh6lA',
+            }).addTo(map);
+
+      wt  =  `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=85c648eb6e86ca138754eeda05c375e2`;
+        $.get(wt, function(responseText){
+         console.log(responseText);
+         temp = responseText['main']['temp'];
+         humidity = responseText['main']['humidity'];
+
+         console.log(temp);
+
+         $('#temp').html(temp);
+         $('#humidity').html(humidity);
+        });
+        
+            L.marker([lat, lng]).addTo(map);
+          });
+          console.log(lat);
+          console.log(lng);
+        
+
+        </script >
+
+ 
+ 
+    </body>
+    </html>
+
+    
